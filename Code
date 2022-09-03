@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./style.css">
+
+
+      
+
+    <script type = "text/javascript">  
+
+
+var name,battery,heart;
+
+function isWebBluetoothEnabled() {
+    if (!navigator.bluetooth) {
+      console.log('Web Bluetooth API is not available in this browser!')
+      return false
+    }
+
+    return true
+  }
+
+  function getDeviceInfo() {
+    let options = {
+      acceptAllDevices: true,
+  optionalServices: ['battery_service']      
+    }
+
+    console.log('Requesting Bluetooth Device...')
+  navigator.bluetooth.requestDevice({
+  acceptAllDevices: true,
+})
+.then(device => { /* … */ })
+.catch(error => { console.error(error); });
+
+    navigator.bluetooth.requestDevice(options).then(device => {
+      console.log('> Name: ' + device.name)
+      name=device.name;
+      console.log('> id: ' + device.id)
+      console.log('> Connected:        ' + device.gatt.connected)
+      return device.gatt.connect();
+    })
+    .then(device => {
+    console.log('Connecting to GATT Server...');
+    return device;
+    return device.gatt;
+    return device.gatt.connect();
+  })
+  .then(server => {
+    console.log('Getting Battery Service...');
+    return server.getPrimaryService('battery_service');
+  })
+  .then(service => {
+    console.log('Getting Battery Level Characteristic...');
+    return service.getCharacteristic('battery_level');
+  })
+  .then(characteristic => {
+    console.log('Reading Battery Level...');
+    return characteristic.readValue();
+  })
+  .then(value => {
+    battery = value.getUint8(0);
+    console.log('> Battery Level is ' + battery + '%');
+    heart=null;
+    console.log("heart  "+ heart+"  bat "+battery+" name "+name);
+  })
+    .catch(error => {
+      console.log('Argh! ' + error)
+    })
+   }
+
+
+
+
+   function getHeartInfo() {
+    let options = {
+      acceptAllDevices: true,
+  optionalServices: ['heart_rate']      
+    }
+
+    console.log('Requesting Bluetooth Device...')
+  navigator.bluetooth.requestDevice({
+  acceptAllDevices: true,
+})
+.then(device => { /* … */ })
+.catch(error => { console.error(error); });
+
+    navigator.bluetooth.requestDevice(options).then(device => {
+      console.log('> Name: ' + device.name)
+      name=device.name;
+      console.log('> id: ' + device.id)
+      console.log('> Connected:        ' + device.gatt.connected)
+      return device.gatt.connect();
+    })
+    .then(device => {
+    console.log('Connecting to GATT Server...');
+    return device;
+    return device.gatt;
+    return device.gatt.connect();
+  })
+  .then(server => {
+    console.log('Getting Heart Service...');
+    return server.getPrimaryService('heart_rate');
+  })
+  .then(service => {
+    console.log('Getting Heart Rate Measurement...');
+    return service.getCharacteristic('heart_rate_measurement');
+  })
+  .then(characteristic => {
+    console.log('Reading Heart  Level...');
+    return characteristic.readValue();
+  })
+  .then(value => {
+    battery = value.getUint8(0);
+    console.log('> Heart Rate is ' + heart + '%');
+    battery=null;
+    console.log("heart"+ heart+"bat"+battery+name);
+
+  })
+    .catch(error => {
+      console.log('Argh! ' + error)
+    })
+   }
+   
+    
+   function myfunction(){
+    if (isWebBluetoothEnabled()) {
+      getDeviceInfo()
+      document.getElementById("device").innerHTML=name;
+    }
+   }
+
+   function myfunction2(){
+    if (isWebBluetoothEnabled()) {
+      getHeartInfo()
+      document.getElementById("device").innerHTML=name;
+    }
+   }
+
+
+
+   console.log("heart"+ heart+"bat"+battery+name);
+  
+        </script>  
+</head>
+
+<body>
+    <img src="./ble.jpg" alt="123">
+    <h1 class="css-3d-text">BLE WordPress Plugin</h1>
+
+    <div class="centered">
+        <button class="btn" id="status" onclick="myfunction()"><i class="fa fa-battery"> Battery info</i></button>
+        <button class="btn" onclick="myfunction2()"><i class="fa fa-heartbeat"></i> Heart Rate info</button>
+        <h1 >Device:<span id="device">battery</span></h1>
+
+    </div>
+
+
+
+</body>
+</html>
